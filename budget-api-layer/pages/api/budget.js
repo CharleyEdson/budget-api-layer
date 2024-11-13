@@ -1,16 +1,15 @@
+import { google } from 'googleapis';
+
 export default async function handler(req, res) {
-  // Set CORS headers to allow requests from any origin
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Or specify your React app's origin
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  // Handle preflight OPTIONS request
   if (req.method === 'OPTIONS') {
     res.status(200).end();
     return;
   }
 
-  // Existing code for POST and GET requests
   if (req.method === 'POST') {
     const { type, category, name, dollarAmount, frequency } = req.body;
 
@@ -34,8 +33,10 @@ export default async function handler(req, res) {
 
       res.status(200).json({ message: 'Entry added to Google Sheets' });
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: 'Error adding entry', error });
+      console.error('Error details:', error); // Log detailed error to console
+      res
+        .status(500)
+        .json({ message: 'Error adding entry', error: error.message || error });
     }
   } else if (req.method === 'GET') {
     res.status(200).json({ message: 'GET request successful' });
